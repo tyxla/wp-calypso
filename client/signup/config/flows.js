@@ -232,6 +232,13 @@ const flows = {
 		description: 'Alternative theme selection for the users who clicked "Create blog" on the two-button homepage.',
 		lastModified: '2016-02-12'
 	},
+
+	mlb: {
+		steps: [ 'mlb-themes', 'mlb-domains', 'user' ],
+		destination: '/me/next?welcome',
+		description: 'Major League Baseball Blogs Signup flow',
+		lastModified: '2015-11-22'
+	}
 };
 
 function removeUserStepFromFlow( flow ) {
