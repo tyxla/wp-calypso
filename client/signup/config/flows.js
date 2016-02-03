@@ -213,6 +213,13 @@ const flows = {
 		description: 'Alternative theme selection for the users who clicked "Create blog" on the two-button homepage.',
 		lastModified: '2016-02-12'
 	},
+
+	'jetpack-connect': {
+		steps: [ 'url-entry', 'plans' ],
+		destination: '/who/knows/?',
+		description: 'Calypso-first Jetpack Signup Flow',
+		lastModified: '2016-02-17'
+	}
 };
 
 function removeUserStepFromFlow( flow ) {
