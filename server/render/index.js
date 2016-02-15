@@ -23,7 +23,7 @@ function bumpStat( group, name ) {
 	}
 }
 
-export function render( element ) {
+function render( element ) {
 	memoizedRenderToString.cache = markupCache;
 
 	if ( ! memoizedRenderToString.cache.has( JSON.stringify( element ) ) ) {
@@ -58,4 +58,11 @@ export function render( element ) {
 			throw ex;
 		}
 	}
+}
+
+export function serverRender( context ) {
+	if ( config.isEnabled( 'server-side-rendering' ) ) {
+		Object.assign( context, render( context.layout ) );
+	}
+	context.res.render( 'index.jade', context );
 }
