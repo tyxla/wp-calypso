@@ -25,10 +25,6 @@ import LayoutLoggedOut from 'layout/logged-out';
 function getProps( context ) {
 	const { tier, site_id: siteId } = context.params;
 
-	const title = buildTitle(
-		i18n.translate( 'Themes', { textOnly: true } ),
-		{ siteID: siteId } );
-
 	const { basePath, analyticsPageTitle } = getAnalyticsData(
 		context.path,
 		tier,
@@ -48,26 +44,42 @@ function getProps( context ) {
 	};
 
 	return {
-		title,
 		tier,
 		search: context.query.s,
 		trackScrollPage: boundTrackScrollPage,
 		runClientAnalytics
 	};
-}
+};
 
-function makeElement( ThemesComponent, Head, store, props ) {
-	return(
-		<ReduxProvider store={ store }>
-			<Head title={ props.title } tier={ props.tier || 'all' }>
-				<ThemesComponent { ...omit( props, [ 'title', 'runClientAnalytics' ] ) } />
+const LoggedInHead = ( { children, context: { params: { tier, site_id: siteID } } } ) => (
+	<Head
+		title={ buildTitle(
+			i18n.translate( 'Themes', { textOnly: true } ),
+			{ siteID }
+		) }
+		tier={ tier || 'all' }>
+		{ children }
+	</Head>
+);
+
+// This is generic -- nothing themes-specific in here!
+function makeElement( Component, getProps, Head, sideEffects = function() {} ) {
+	// How do we handle the dispatch?
+	return ( context, next ) => {
+		context.secondary = <ReduxProvider store={ context.store }>
+			<Head context={ context }>
+				<Component { ...getProps( context ) } />
 				<ClientSideEffects>
-					{ props.runClientAnalytics }
+					{ sideEffects }
 				</ClientSideEffects>
 			</Head>
-		</ReduxProvider>
-	);
+		</ReduxProvider>;
+		next();
+	}
 };
+
+// Usage:
+// export const singleSite = makeElement( SingleSiteComponent, getThemesProps, LoggedInHead, runClientAnalytics);
 
 // Where do we put this? It's client/server-agnostic, so not in client/controller,
 // which requires ReactDom... Maybe in lib/react-helpers?
