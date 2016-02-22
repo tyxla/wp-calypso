@@ -78,7 +78,7 @@ class WpVideoView extends Component {
 		};
 
 		return Object.assign(
-			pick( shortcodeAttributes, ['guid', 'w', 'h'] ),
+			pick( shortcodeAttributes, [ 'guid', 'w', 'h' ] ),
 			{ embedUrl: this.getEmbedUrl( shortcodeAttributes ) }
 		);
 	}
@@ -87,8 +87,8 @@ class WpVideoView extends Component {
 		const defaultAttributeValues = { hd: false, at: 0, defaultLangCode: undefined };
 		const attributesWithNonDefaultValues = omitBy(
 			shortcodeAttributes,
-			( value, key ) => defaultAttributeValues[key] === value );
-		const queryStringAttributes = ['autoplay', 'hd', 'loop', 'at', 'defaultLangCode'];
+			( value, key ) => defaultAttributeValues[ key ] === value );
+		const queryStringAttributes = [ 'autoplay', 'hd', 'loop', 'at', 'defaultLangCode' ];
 		const queryString = QueryString.stringify( pick( attributesWithNonDefaultValues, queryStringAttributes ) );
 
 		return `https://videopress.com/embed/${ shortcodeAttributes.guid }?${ queryString }`;

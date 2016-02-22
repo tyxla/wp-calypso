@@ -17,7 +17,7 @@ describe( 'selectors', () => {
 			const video = getVideo( {
 				videos: {
 					items: {
-						kUJmAcSf: {title: 'VideoPress Demo', width: 1920, height: 1080}
+						kUJmAcSf: { title: 'VideoPress Demo', width: 1920, height: 1080 }
 					}
 				}
 			}, 'kUJmAcSf' );
