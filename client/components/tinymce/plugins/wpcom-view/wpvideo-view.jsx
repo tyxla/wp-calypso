@@ -78,7 +78,6 @@ class WpVideoView extends Component {
 		};
 
 		return Object.assign(
-			{},
 			pick( shortcodeAttributes, ['guid', 'w', 'h'] ),
 			{ embedUrl: this.getEmbedUrl( shortcodeAttributes ) }
 		);
