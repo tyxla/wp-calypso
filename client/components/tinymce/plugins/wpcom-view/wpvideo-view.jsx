@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import omitBy from 'lodash/omitBy';
 import pick from 'lodash/pick';
 import QueryString from 'querystring';
-import tinymce from 'tinymce/tinymce';
 
 /**
  * Internal dependencies
