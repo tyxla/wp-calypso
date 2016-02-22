@@ -35,13 +35,11 @@ class WpVideoView extends Component {
 	}
 
 	constrainVideoDimensions( shortcodeWidthAttribute, shortcodeHeightAttribute ) {
-		const defaultWidth = 640;
-		const defaultAspectRatio = 16 / 9;
 		let { width, height } = this.props.video
 			? this.props.video
 			: {
-				width: defaultWidth,
-				height: defaultWidth / defaultAspectRatio
+				width: 640,
+				height: 640 / ( 16 / 9 )
 			};
 		const aspectRatio = width / height;
 
