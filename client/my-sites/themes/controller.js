@@ -1,11 +1,9 @@
 /**
  * External Dependencies
  */
-import ReactDom from 'react-dom';
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import omit from 'lodash/omit';
-import startsWith from 'lodash/startsWith';
 
 /**
  * Internal Dependencies
@@ -21,7 +19,7 @@ import buildTitle from 'lib/screen-title/utils';
 import { getAnalyticsData } from './helpers';
 import { getCurrentUser } from 'state/current-user/selectors';
 import { setSection } from 'state/ui/actions';
-import ClientSideEffects from './client-side-effects';
+import ClientSideEffects from 'components/client-side-effects';
 import { removeSidebar } from 'lib/react-helpers';
 
 function getProps( context ) {
@@ -135,14 +133,6 @@ export function details( context, next ) {
 	} );
 
 	context.primary = makeElement( ThemeSheetComponent, Head, context.store, props );
+	context.secondary = null; // When we're logged in, we need to remove the sidebar.
 	next();
-}
-
-// Generic middleware -- move to client/controller.js?
-// lib/react-helpers isn't probably middleware-specific enough
-export function renderPrimary( context ) {
-	ReactDom.render(
-		context.primary,
-		document.getElementById( 'primary' )
-	);
 }
