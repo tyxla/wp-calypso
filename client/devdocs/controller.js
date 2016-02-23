@@ -20,7 +20,8 @@ var DocsComponent = require( './main' ),
 	Typography = require( './design/typography' ),
 	DevWelcome = require( './welcome' ),
 	Sidebar = require( './sidebar' ),
-	FormStateExamplesComponent = require( './form-state-examples' );
+	FormStateExamplesComponent = require( './form-state-examples' ),
+	removeSidebar = require( 'lib/react-helpers' ).removeSidebar;
 
 var devdocs = {
 
@@ -131,11 +132,7 @@ var devdocs = {
 	},
 
 	pleaseLogIn: function( context ) {
-		context.store.dispatch( setSection( 'devdocs-start', {
-			hasSidebar: false
-		} ) );
-
-		ReactDom.unmountComponentAtNode( document.getElementById( 'secondary' ) );
+		removeSidebar( context, { section: 'devdocs-start' } );
 
 		ReactDom.render(
 			React.createElement( EmptyContent, {
