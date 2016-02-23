@@ -2,6 +2,7 @@
  * External dependencies
  */
 var React = require( 'react' ),
+	ReactDom = require( 'react-dom' ),
 	store = require( 'store' ),
 	ReactInjection = require( 'react/lib/ReactInjection' ),
 	some = require( 'lodash/some' ),
@@ -44,6 +45,7 @@ var config = require( 'config' ),
 	TitleStore = require( 'lib/screen-title/store' ),
 	renderWithReduxStore = require( 'lib/react-helpers' ).renderWithReduxStore,
 	bindWpLocaleState = require( 'lib/wp/localization' ).bindState,
+	setSection = require( 'state/ui/actions' ).setSection,
 	// The following components require the i18n mixin, so must be required after i18n is initialized
 	Layout,
 	Page404;
@@ -372,23 +374,32 @@ function reduxStoreReady( reduxStore ) {
 
 	// 404 handler. Do not put any routes below this one.
 	page( '*', function( context, next ) {
-		const Page404 = require( 'layout/404' );
-
 		if ( config.isEnabled( 'code-splitting' ) ) {
-			if ( typeof context.sectionRouteMatched === 'undefined' || ! context.sectionRouteMatched ) {
-				Page404.show( context );
+			if ( ! context.sectionRouteMatched ) {
+				show404( context );
 
 				return;
 			}
 
 			next();
 		} else {
-			Page404.show( context );
+			show404( context );
 		}
 	} );
 
 	detectHistoryNavigation.start();
 	page.start();
+}
+
+function show404( context ) {
+	context.store.dispatch( setSection( null, { hasSidebar: false } ) );
+
+	Page404 = require( 'layout/404' );
+
+	ReactDom.render(
+		<Page404 />,
+		document.getElementById( 'primary' )
+	);
 }
 
 window.AppBoot = function() {
