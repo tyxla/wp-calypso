@@ -20,7 +20,6 @@ import { getAnalyticsData } from './helpers';
 import { getCurrentUser } from 'state/current-user/selectors';
 import { setSection } from 'state/ui/actions';
 import ClientSideEffects from 'components/client-side-effects';
-import { removeSidebar } from 'lib/react-helpers';
 
 function getProps( context ) {
 	const { tier, site_id: siteId } = context.params;
@@ -126,11 +125,10 @@ export function details( context, next ) {
 		isLoggedIn: !! user
 	};
 
-	// When we're logged in, we need to remove the sidebar.
-	removeSidebar( context, {
-		section: 'themes',
+	context.store.dispatch( setSection( 'themes', {
+		hasSidebar: false,
 		isFullScreen: true
-	} );
+	} ) );
 
 	context.primary = makeElement( ThemeSheetComponent, Head, context.store, props );
 	context.secondary = null; // When we're logged in, we need to remove the sidebar.
