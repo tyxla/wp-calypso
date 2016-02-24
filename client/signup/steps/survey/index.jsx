@@ -14,6 +14,7 @@ import Card from 'components/card';
 import CompactCard from 'components/card/compact';
 import BackButton from 'components/header-cake';
 import Gridicon from 'components/gridicon';
+import { getABTestVariation } from 'lib/abtest';
 
 function isSurveyOneStep() {
 	return false;
@@ -134,17 +135,17 @@ export default React.createClass( {
 
 	getThemesForThemeStep( vertical ) {
 		const businessCategories = this.getVerticalIdsForCategory( 'a8c.3' );
-		if ( -1 !== businessCategories.indexOf( vertical ) ) {
+		if ( 'verticalThemes' === getABTestVariation( 'verticalThemes' ) && -1 !== businessCategories.indexOf( vertical ) ) {
 			return [
-				{ name: 'Button', slug: 'button' },
-				{ name: 'Franklin', slug: 'franklin' },
-				{ name: 'Sapor', slug: 'sapor' },
-				{ name: 'Colinear', slug: 'colinear' },
-				{ name: 'Minnow', slug: 'minnow' },
-				{ name: 'Eighties', slug: 'eighties' },
-				{ name: 'Libre', slug: 'libre' },
-				{ name: 'Penscratch', slug: 'penscratch' },
-				{ name: 'Libretto', slug: 'libretto' },
+				{ name: 'Sela', slug: 'sela' },
+				{ name: 'Gateway', slug: 'gateway' },
+				{ name: 'Motif', slug: 'motif' },
+				{ name: 'Goran', slug: 'goran' },
+				{ name: 'Pique', slug: 'pique' },
+				{ name: 'Edin', slug: 'edin' },
+				{ name: 'Harmonic', slug: 'harmonic' },
+				{ name: 'Sequential', slug: 'sequential' },
+				{ name: 'Big Brother', slug: 'big-brother' },
 			];
 		}
 	},

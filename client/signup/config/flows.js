@@ -195,6 +195,20 @@ const flows = {
 		description: 'Alternative theme selection for the users who clicked "Create blog" on the two-button homepage.',
 		lastModified: '2016-02-12'
 	},
+
+	'website-vertical-themes': {
+		steps: [ 'survey', 'themes', 'domains', 'plans', 'user' ],
+		destination: getCheckoutDestination,
+		description: 'Test flow showing vertical themes on themes step based on verticals survey.',
+		lastModified: '2016-02-23'
+	},
+
+	'blog-vertical-themes': {
+		steps: [ 'survey', 'themes', 'domains', 'plans', 'user' ],
+		destination: getCheckoutDestination,
+		description: 'Test flow showing vertical themes on themes step based on verticals survey.',
+		lastModified: '2016-02-23'
+	},
 };
 
 function removeUserStepFromFlow( flow ) {
@@ -220,6 +234,13 @@ function filterFlowName( flowName ) {
 		}
 	}
 
+	const verticalThemesFlows = [ 'blog', 'website' ];
+	if ( includes( verticalThemesFlows, flowName ) && 'notTested' === getABTestVariation( 'headstart' ) && 'notTested' === getABTestVariation( 'altThemes' ) ) {
+		if ( 'verticalThemes' === abtest( 'verticalThemes' ) ) {
+			return ( 'blog' === flowName ) ? 'blog-vertical-themes' : 'website-vertical-themes';
+		}
+	}
+
 	let isInPreviousTest = false;
 
 	if ( getABTestVariation( 'headstart' ) && getABTestVariation( 'headstart' ) !== 'notTested' ) {
@@ -227,6 +248,10 @@ function filterFlowName( flowName ) {
 	}
 
 	if ( getABTestVariation( 'altThemes' ) && getABTestVariation( 'altThemes' ) !== 'notTested' ) {
+		isInPreviousTest = true;
+	}
+
+	if ( getABTestVariation( 'verticalThemes' ) && getABTestVariation( 'verticalThemes' ) !== 'notTested' ) {
 		isInPreviousTest = true;
 	}
 

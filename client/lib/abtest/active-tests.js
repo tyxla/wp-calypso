@@ -107,4 +107,13 @@ module.exports = {
 		},
 		defaultVariation: 'original'
 	},
+	verticalThemes: {
+		datestamp: '20160223',
+		variations: {
+			original: 20,
+			verticalThemes: 20,
+			notTested: 60
+		},
+		defaultVariation: 'original'
+	},
 };
