@@ -63,9 +63,10 @@ const Email = React.createClass( {
 	},
 
 	content() {
-		if ( ! this.props.domains.hasLoadedFromServer ) {
+		if ( ! ( this.props.domains.hasLoadedFromServer && this.props.loaded ) ) {
 			return this.translate( 'Loading…' );
 		}
+
 		let domainList = this.props.selectedDomainName
 			? [ getSelectedDomain( this.props ) ]
 			: this.props.domains.list;
@@ -88,7 +89,7 @@ const Email = React.createClass( {
 			),
 			illustration: '/calypso/images/drake/drake-whoops.svg',
 			action: this.translate( 'Add a Custom Domain' ),
-			actionURL: '/domains/add/' + this.props.selectedSite.domain
+			actionURL: '/domains/add/' + this.props.selectedSite.slug
 		};
 
 		return (
