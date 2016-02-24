@@ -30,7 +30,7 @@ const Email = React.createClass( {
 			React.PropTypes.bool
 		] ).isRequired,
 		user: React.PropTypes.object.isRequired,
-		users: React.PropTypes.array.isRequired,
+		googleAppsUsers: React.PropTypes.array.isRequired,
 		loaded: React.PropTypes.bool.isRequired
 	},
 

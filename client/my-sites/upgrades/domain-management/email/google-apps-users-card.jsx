@@ -19,7 +19,7 @@ const GoogleAppsUsers = React.createClass( {
 
 	propTypes: {
 		domains: React.PropTypes.object.isRequired,
-		users: React.PropTypes.array.isRequired,
+		googleAppsUsers: React.PropTypes.array.isRequired,
 		selectedDomainName: React.PropTypes.string,
 		selectedSite: React.PropTypes.oneOfType( [
 			React.PropTypes.object,
@@ -47,7 +47,7 @@ const GoogleAppsUsers = React.createClass( {
 		return (
 			<div>
 				<SectionHeader
-					count={ this.props.users.length }
+					count={ this.props.googleAppsUsers.length }
 					label={ this.translate( 'Google Apps Users' ) }>
 					{ this.canAddUsers() && (
 						<a
@@ -60,7 +60,7 @@ const GoogleAppsUsers = React.createClass( {
 				</SectionHeader>
 				<CompactCard className="google-apps-users-card">
 					<ul className="google-apps-users-card__user-list">
-						{ this.props.users.map(
+						{ this.props.googleAppsUsers.map(
 							( user, index ) => (
 								<GoogleAppsUserItem
 									key={ index } user={ user }
