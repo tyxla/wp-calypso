@@ -6,6 +6,7 @@ import page from 'page';
 import get from 'lodash/get';
 import debugModule from 'debug';
 import includes from 'lodash/includes';
+import some from 'lodash/some';
 
 /**
  * Internal dependencies
@@ -85,9 +86,6 @@ export default React.createClass( {
 	refreshValidation() {
 		const errors = InvitesCreateValidationStore.getErrors( this.props.site.ID, this.state.role ) || [];
 		let success = InvitesCreateValidationStore.getSuccess( this.props.site.ID, this.state.role ) || [];
-		if ( ! success.indexOf ) {
-			success = Object.keys( success ).map( key => success[ key ] );
-		}
 
 		this.setState( {
 			errors,
@@ -136,6 +134,26 @@ export default React.createClass( {
 				sendingInvites: false,
 				response: error ? error : data
 			} );
+		} );
+	},
+
+	isSubmitDisabled() {
+		const { errors, success, usernamesOrEmails } = this.state;
+		const invitees = Array.isArray( usernamesOrEmails ) ? usernamesOrEmails : [];
+
+		// If there are no invitees, then don't allow submitting the form
+		if ( this.state.sendingInvites || ! invitees.length ) {
+			return true;
+		}
+
+		if ( errors && errors.length ) {
+			return true;
+		}
+
+		// If there are invitees, and there are no errors, let's check
+		// if there are any pending validations.
+		return some( usernamesOrEmails, ( value ) => {
+			return ! includes( success, value );
 		} );
 	},
 
@@ -205,7 +223,7 @@ export default React.createClass( {
 							</FormSettingExplanation>
 						</FormFieldset>
 
-						<FormButton disabled={ this.state.sendingInvites }>
+						<FormButton disabled={ this.isSubmitDisabled() }>
 							{ this.translate(
 								'Send Invitation',
 								'Send Invitations', {

@@ -1,3 +1,5 @@
+/** @ssr-ready **/
+
 /**
  * External dependencies
  */
@@ -209,6 +211,10 @@ function purchaseType( purchase ) {
 	return null;
 }
 
+function shouldFetchPurchases( purchases ) {
+	return ! purchases.hasLoadedFromServer && ! purchases.isFetching;
+}
+
 function showCreditCardExpiringWarning( purchase ) {
 	return ! isIncludedWithPlan( purchase ) &&
 		isPaidWithCreditCard( purchase ) &&
@@ -239,5 +245,6 @@ export {
 	isRenewing,
 	paymentLogoType,
 	purchaseType,
+	shouldFetchPurchases,
 	showCreditCardExpiringWarning,
 }

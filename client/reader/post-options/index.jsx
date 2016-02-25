@@ -82,6 +82,9 @@ const PostOptions = React.createClass( {
 	blockSite: function() {
 		stats.recordAction( 'blocked_blog' );
 		stats.recordGaEvent( 'Clicked Block Site' );
+		stats.recordTrack( 'calypso_reader_block_site', {
+			blog_id: this.props.post.site_ID
+		} );
 		SiteBlockActions.block( this.props.post.site_ID );
 		this.props.onBlock();
 	},
@@ -110,9 +113,7 @@ const PostOptions = React.createClass( {
 		const feed = FeedStore.get( feedId );
 
 		if ( ! feed ) {
-			setTimeout( function() {
-				FeedStoreActions.fetch( feedId );
-			}, 0 );
+			FeedStoreActions.fetch( feedId );
 		}
 
 		return feed;

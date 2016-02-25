@@ -133,7 +133,7 @@ export default React.createClass( {
 			sites = this.props.sites.search( this.state.search );
 		} else {
 			sites = this.shouldShowGroups()
-				? this.props.sites.getVisibleAndNotRecentNorStarred()
+				? this.props.sites.getVisibleAndNotRecent()
 				: this.props.sites.getVisible();
 		}
 
@@ -234,7 +234,11 @@ export default React.createClass( {
 			);
 		}, this );
 
-		return recentSites;
+		if ( ! recentSites ) {
+			return null;
+		}
+
+		return <div className="site-selector__recent">{ recentSites }</div>;
 	},
 
 	renderStarredSites() {

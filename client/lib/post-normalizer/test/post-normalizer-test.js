@@ -31,6 +31,7 @@ let normalizer = require( '../' ),
 			normalizer.content.detectEmbeds,
 			normalizer.content.wordCountAndReadingTime
 		] ),
+		normalizer.createBetterExcerpt,
 		normalizer.waitForImagesToLoad,
 		normalizer.pickCanonicalImage,
 		normalizer.keepValidImages( 1, 1 )
@@ -869,6 +870,31 @@ describe( 'post-normalizer', function() {
 					done( err );
 				}
 			);
+		} );
+	} );
+	describe( 'The fancy excerpt creator', function() {
+		function assertExcerptBecomes( source, expected, done ) {
+			normalizer( { content: source }, [ normalizer.createBetterExcerpt ], function( err, normalized ) {
+				assert.strictEqual( normalized.better_excerpt, expected );
+				done( err );
+			} );
+		}
+
+		it( 'strips empty elements and leading and trailing brs', function( done ) {
+			assertExcerptBecomes( `<br>
+<p>&nbsp;</p>
+<p class="wp-caption-text">caption</p>
+<p><img src="http://example.com/image.jpg"></p>
+<p><a href="http://wikipedia.org">Giraffes</a> are <br>great</p>
+<p></p>`, '<p>Giraffes are <br>great</p>', done );
+		} );
+
+		it( 'limits the excerpt to 3 elements', function( done ) {
+			assertExcerptBecomes( '<p>one</p><p>two</p><p>three</p><p>four</p>', '<p>one</p><p>two</p><p>three</p>', done );
+		} );
+
+		it( 'limits the excerpt to 3 elements after trimming', function( done ) {
+			assertExcerptBecomes( '<br /><p></p><p>one</p><p>two</p><p></p><br><p>three</p><p>four</p><br><p></p>', '<p>one</p><p>two</p><br>', done );
 		} );
 	} );
 } );

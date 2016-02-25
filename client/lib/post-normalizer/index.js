@@ -19,11 +19,14 @@ var assign = require( 'lodash/assign' ),
 	srcset = require( 'srcset' ),
 	startsWith = require( 'lodash/startsWith' ),
 	toArray = require( 'lodash/toArray' ),
+	trim = require( 'lodash/trim' ),
 	uniqBy = require( 'lodash/uniqBy' ),
 	url = require( 'url' );
 
+import striptags from 'striptags';
+
 /**
- * Internal depedencies
+ * Internal dependencies
  */
 import i18n from 'lib/mixins/i18n';
 import formatting from 'lib/formatting';
@@ -434,6 +437,55 @@ normalizePost.pickCanonicalImage = function pickCanonicalImage( post, callback )
 	}
 	callback();
 };
+
+normalizePost.createBetterExcerpt = function createBetterExcerpt( post, callback ) {
+	if ( ! post || ! post.content ) {
+		callback();
+		return;
+	}
+
+	function removeElement( element ) {
+		element.parentNode && element.parentNode.removeChild( element );
+	}
+
+	let betterExcerpt = striptags( post.content, [ 'p', 'br' ] );
+
+	// Spin up a new DOM for the linebreak markup
+	const dom = document.createElement( 'div' );
+	dom.innerHTML = betterExcerpt;
+
+
+	// Ditch any photo captions with the wp-caption-text class
+	forEach( dom.querySelectorAll( '.wp-caption-text' ), removeElement );
+
+	// Strip any empty p and br elements from the beginning of the content
+	forEach( dom.querySelectorAll( 'p,br' ), function( element ) {
+		// is this element non-empty? bail on our iteration.
+		if ( element.childNodes.length > 0 && trim( element.textContent ).length > 0 ) {
+			return false;
+		}
+		element.parentNode && element.parentNode.removeChild( element );
+	} );
+
+	// now strip any p's that are empty
+	forEach( dom.querySelectorAll( 'p' ), function( element ) {
+		if ( trim( element.textContent ).length === 0 ) {
+			element.parentNode && element.parentNode.removeChild( element );
+		}
+	} );
+
+	// now limit it to the first three elements
+	forEach( dom.querySelectorAll( 'p, br' ), function( element, index ) {
+		if ( index >= 3 ) {
+			element.parentNode && element.parentNode.removeChild( element );
+		}
+	} );
+
+	post.better_excerpt = trim( dom.innerHTML );
+	dom.innerHTML = '';
+
+	callback();
+},
 
 normalizePost.withContentDOM = function( transforms ) {
 	return function withContentDOM( post, callback ) {

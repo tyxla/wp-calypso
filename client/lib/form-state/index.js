@@ -48,9 +48,9 @@ function Controller( options ) {
 	this._debouncedSanitize = debounce( this.sanitize, debounceWait );
 	this._debouncedValidate = debounce( this.validate, debounceWait );
 
-	this._hideFieldErrorsOnChange = isUndefined( options.hideFieldErrorsOnChange ) ?
-		false :
-		options.hideFieldErrorsOnChange;
+	this._hideFieldErrorsOnChange = isUndefined( options.hideFieldErrorsOnChange )
+		? false
+		: options.hideFieldErrorsOnChange;
 
 	if ( this._loadFunction ) {
 		this._loadFieldValues();
@@ -194,7 +194,7 @@ function updateFields( formState, callback ) {
 
 function initializeFields( formState, fieldValues ) {
 	return updateFields( formState, function( name ) {
-		return { value: fieldValues[ name ] || '' };
+		return { value: fieldValues[ name ] || '', name };
 	} );
 }
 
@@ -308,10 +308,13 @@ function isFieldValidating( formState, fieldName ) {
 	return field.isValidating;
 }
 
-function getErrorMessages( formState ) {
-	var invalidFields = filter( formState, function( field, name ) {
-		return isFieldInvalid( formState, name );
+function getInvalidFields( formState ) {
+	return filter( formState, function( field, fieldName ) {
+		return isFieldInvalid( formState, fieldName );
 	} );
+}
+function getErrorMessages( formState ) {
+	var invalidFields = getInvalidFields( formState );
 
 	return flatten( map( invalidFields, 'errors' ) );
 }
@@ -349,7 +352,9 @@ module.exports = {
 	setFieldsValidating: setFieldsValidating,
 	setFieldErrors: setFieldErrors,
 	getErrorMessages: getErrorMessages,
+	getInvalidFields: getInvalidFields,
 	getFieldErrorMessages: getFieldErrorMessages,
+	hasErrors: hasErrors,
 	isFieldDisabled: isFieldDisabled,
 	isFieldInvalid: isFieldInvalid,
 	isFieldPendingValidation: isFieldPendingValidation,

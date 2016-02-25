@@ -1,11 +1,9 @@
 /**
  * External Dependencies
  */
-import ReactDom from 'react-dom';
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import omit from 'lodash/omit';
-import startsWith from 'lodash/startsWith';
 
 /**
  * Internal Dependencies
@@ -21,7 +19,8 @@ import buildTitle from 'lib/screen-title/utils';
 import { getAnalyticsData } from './helpers';
 import { getCurrentUser } from 'state/current-user/selectors';
 import { setSection } from 'state/ui/actions';
-import ClientSideEffects from './client-side-effects';
+import ClientSideEffects from 'components/client-side-effects';
+import LayoutLoggedOut from 'layout/logged-out';
 
 function getProps( context ) {
 	const { tier, site_id: siteId } = context.params;
@@ -68,6 +67,20 @@ function makeElement( ThemesComponent, Head, store, props ) {
 			</Head>
 		</ReduxProvider>
 	);
+};
+
+// Where do we put this? It's client/server-agnostic, so not in client/controller,
+// which requires ReactDom... Maybe in lib/react-helpers?
+export function makeLoggedOutLayout( context, next ) {
+	const { store, primary, secondary, tertiary } = context;
+	context.layout = (
+		<ReduxProvider store={ store }>
+			<LayoutLoggedOut primary={ primary }
+				secondary={ secondary }
+				tertiary={ tertiary } />
+		</ReduxProvider>
+	);
+	next();
 };
 
 export function singleSite( context, next ) {
@@ -120,34 +133,19 @@ export function details( context, next ) {
 		: require( 'my-sites/themes/head' );
 	const props = {
 		themeSlug: context.params.slug,
+		contentSection: context.params.section,
 		title: buildTitle(
 			i18n.translate( 'Theme Details', { textOnly: true } )
-		)
-	}
+		),
+		isLoggedIn: !! user
+	};
 
 	context.store.dispatch( setSection( 'themes', {
 		hasSidebar: false,
 		isFullScreen: true
 	} ) );
 
-	// When we're logged in, we need to remove the sidebar.
-	ReactDom.unmountComponentAtNode( document.getElementById( 'secondary' ) );
-
 	context.primary = makeElement( ThemeSheetComponent, Head, context.store, props );
+	context.secondary = null; // When we're logged in, we need to remove the sidebar.
 	next();
-}
-
-// Generic middleware -- move to client/controller.js?
-// lib/react-helpers isn't probably middleware-specific enough
-export function renderPrimary( context ) {
-	const { path } = context.params;
-	// FIXME: temporary hack until we have a proper isomorphic, one tree routing solution. Do NOT do this!
-	const sheetsDomElement = startsWith( path, '/themes' ) && document.getElementsByClassName( 'themes__sheet' )[0];
-	const mainDomElement = startsWith( path, '/design' ) && document.getElementsByClassName( 'themes main' )[0];
-	if ( ! sheetsDomElement && ! mainDomElement ) {
-		ReactDom.render(
-			context.primary,
-			document.getElementById( 'primary' )
-		);
-	}
 }

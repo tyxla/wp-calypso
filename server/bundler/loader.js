@@ -2,7 +2,7 @@ var config = require( 'config' ),
 	utils = require( './utils' );
 
 function getSectionsModule( sections ) {
-	var dependencies = '',
+	var dependencies,
 		loadSection = '',
 		sectionLoaders = '';
 
@@ -13,7 +13,8 @@ function getSectionsModule( sections ) {
 			"\tReact = require( 'react' ),",
 			"\tLoadingError = require( 'layout/error' ),",
 			"\tclasses = require( 'component-classes' ),",
-			"\tshow404 = require( 'lib/router-helper' ).show404;",
+			"\tshow404 = require( 'lib/router-helper' ).show404,",
+			"\tcontroller = require( 'controller' );",
 			'\n',
 			'var _loadedSections = {};'
 		].join( '\n' );
@@ -25,6 +26,7 @@ function getSectionsModule( sections ) {
 			} );
 		} );
 	} else {
+		dependencies = "var controller = require( 'controller' );\n";
 		sectionLoaders = getRequires( sections );
 	}
 
@@ -86,7 +88,7 @@ function splitTemplate( path, module, chunkName ) {
 		'		}',
 		'		context.store.dispatch( { type: "SET_SECTION", isLoading: false } );',
 		'		if ( ! _loadedSections[ ' + JSON.stringify( module ) + ' ] ) {',
-		'			require( ' + JSON.stringify( module ) + ' )();',
+		'			require( ' + JSON.stringify( module ) + ' )( controller.clientRouter );',
 		'			_loadedSections[ ' + JSON.stringify( module ) + ' ] = true;',
 		'			page( ' + path + ', show404 );',
 		'		}',
@@ -100,7 +102,7 @@ function splitTemplate( path, module, chunkName ) {
 }
 
 function requireTemplate( module ) {
-	return 'require( ' + JSON.stringify( module ) + ' )();\n';
+	return 'require( ' + JSON.stringify( module ) + ' )( controller.clientRouter );\n';
 }
 
 function singleEnsure( chunkName ) {
@@ -129,4 +131,3 @@ module.exports = function( content ) {
 
 	return getSectionsModule( sections );
 };
-

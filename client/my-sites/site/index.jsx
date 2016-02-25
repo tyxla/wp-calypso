@@ -16,6 +16,7 @@ var SiteIcon = require( 'components/site-icon' ),
 
 import { userCan } from 'lib/site/utils';
 import Tooltip from 'components/tooltip';
+import ExternalLink from 'components/external-link';
 
 module.exports = React.createClass( {
 	displayName: 'Site',
@@ -40,7 +41,7 @@ module.exports = React.createClass( {
 
 			homeLink: false,
 			enableActions: false,
-			disableStarring: false
+			disableStarring: true
 		};
 	},
 
@@ -123,10 +124,10 @@ module.exports = React.createClass( {
 		}
 
 		return (
-			<a href={ url } target="_blank" className="site__edit-icon">
+			<ExternalLink icon={ true } href={ url } target="_blank" className="site__edit-icon">
 				<SiteIcon site={ this.props.site } />
 				<span className="site__edit-icon-text">{ this.translate( 'Edit Icon' ) }</span>
-			</a>
+			</ExternalLink>
 		);
 	},
 
@@ -192,9 +193,14 @@ module.exports = React.createClass( {
 								<Gridicon icon="house" size={ 18 } />
 							</span>
 						}
-						{ ! this.props.enableActions && sites.isStarred( this.props.site ) &&
-							<span className="site__star-badge">
+						{ ! this.props.disableStarring && sites.isStarred( this.props.site ) &&
+							<span className="site__badge">
 								<Gridicon icon="star" size={ 18 } />
+							</span>
+						}
+						{ this.props.site.is_private &&
+							<span className="site__badge">
+								<Gridicon icon="lock" size={ 18 } />
 							</span>
 						}
 					</a>

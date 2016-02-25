@@ -18,18 +18,18 @@ const PurchaseDetail = ( {
 	target,
 	title
 } ) => {
-	const classes = classNames( 'checkout__purchase-detail', additionalClass, {
+	const classes = classNames( 'checkout-thank-you__purchase-detail', additionalClass, {
 		'is-placeholder': isPlaceholder
 	} );
 
 	return (
 		<li className={ classes }>
-			<div className="checkout__purchase-detail-text">
-				<h3 className="checkout__purchase-detail-title">{ title }</h3>
-				<p className="checkout__purchase-detail-description">{ description }</p>
+			<div className="checkout-thank-you__purchase-detail-text">
+				<h3 className="checkout-thank-you__purchase-detail-title">{ title }</h3>
+				<p className="checkout-thank-you__purchase-detail-description">{ description }</p>
 			</div>
 			<Button
-				className="checkout__purchase-detail-button"
+				className="checkout-thank-you__purchase-detail-button"
 				href={ href }
 				target={ target }
 				primary>
@@ -42,7 +42,10 @@ const PurchaseDetail = ( {
 PurchaseDetail.propTypes = {
 	additionalClass: React.PropTypes.string,
 	buttonText: React.PropTypes.string,
-	description: React.PropTypes.string,
+	description: React.PropTypes.oneOfType( [
+		React.PropTypes.array,
+		React.PropTypes.string,
+	] ),
 	href: React.PropTypes.string,
 	isPlaceholder: React.PropTypes.bool,
 	target: React.PropTypes.string,

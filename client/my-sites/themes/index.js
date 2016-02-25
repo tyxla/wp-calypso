@@ -1,42 +1,42 @@
 /**
- * External dependencies
- */
-import page from 'page';
-
-/**
  * Internal dependencies
  */
 import config from 'config';
 import userFactory from 'lib/user';;
 import { navigation, siteSelection } from 'my-sites/controller';
-import { singleSite, multiSite, loggedOut, details, renderPrimary } from './controller';
+import { singleSite, multiSite, loggedOut, details, makeLoggedOutLayout } from './controller';
 
 const user = userFactory();
 
 const isLoggedIn = !! user.get();
-const routes = isLoggedIn
+
+const designRoutes = isLoggedIn
 	? {
-		'/design': [ multiSite ],
-		'/design/:site_id': [ singleSite ],
-		'/design/type/:tier': [ multiSite ],
-		'/design/type/:tier/:site_id': [ singleSite ],
-		'/design*': [ navigation, siteSelection ]
+		'/design': [ multiSite, navigation, siteSelection ],
+		'/design/:site_id': [ singleSite, navigation, siteSelection ],
+		'/design/type/:tier': [ multiSite, navigation, siteSelection ],
+		'/design/type/:tier/:site_id': [ singleSite, navigation, siteSelection ],
 	}
 	: {
-		'/design': [ loggedOut ],
-		'/design/type/:tier': [ loggedOut ]
+		'/design': [ loggedOut, makeLoggedOutLayout ],
+		'/design/type/:tier': [ loggedOut, makeLoggedOutLayout ]
 	};
 
-export default function() {
-	if ( config.isEnabled( 'manage/themes' ) ) {
-		// Does iterating over Object.keys preserve order? If it doesn't, use lodash's mapValues
-		Object.keys( routes ).forEach( route => {
-			page( route, ...routes[ route ] );
-		} )
-		page( '/design*', renderPrimary ); // Call explicitly here because client-specific
+const themesRoutes = isLoggedIn
+	? {
+		'/themes/:slug/:section?/:site_id?': [ details ]
 	}
-	if ( config.isEnabled( 'manage/themes/details' ) ) {
-		page( '/themes/:slug/:site_id?', details );
-		page( '/themes*', renderPrimary ); // Call explicitly here because client-specific
-	}
+	: {
+		'/themes/:slug/:section?/:site_id?': [ details, makeLoggedOutLayout ]
+	};
+
+const routes = Object.assign( {},
+	config.isEnabled( 'manage/themes' ) ? designRoutes : {},
+	config.isEnabled( 'manage/themes/details' ) ? themesRoutes : {}
+)
+
+export default function( router ) {
+	Object.keys( routes ).forEach( route => {
+		router( route, ...routes[ route ] );
+	} )
 };
