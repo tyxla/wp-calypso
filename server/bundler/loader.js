@@ -13,7 +13,7 @@ function getSectionsModule( sections ) {
 			"\tReact = require( 'react' ),",
 			"\tLoadingError = require( 'layout/error' ),",
 			"\tclasses = require( 'component-classes' ),",
-			"\trouterHelper = require( 'lib/router-helper' );",
+			"\tshow404 = require( 'lib/router-helper' ).show404;",
 			'\n',
 			'var _loadedSections = {};'
 		].join( '\n' );
@@ -67,6 +67,7 @@ function splitTemplate( path, module, chunkName ) {
 
 	result = [
 		'page( ' + path + ', function( context, next ) {',
+		'	context.sectionRouteMatched = true;',
 		'	if ( _loadedSections[ ' + JSON.stringify( module ) + ' ] ) {',
 		'		layoutFocus.next();',
 		'		return next();',
@@ -85,12 +86,9 @@ function splitTemplate( path, module, chunkName ) {
 		'		}',
 		'		context.store.dispatch( { type: "SET_SECTION", isLoading: false } );',
 		'		if ( ! _loadedSections[ ' + JSON.stringify( module ) + ' ] ) {',
-		'			routerHelper.removeCurrent404Route( page );',
 		'			require( ' + JSON.stringify( module ) + ' )();',
 		'			_loadedSections[ ' + JSON.stringify( module ) + ' ] = true;',
-		'			page( "*", function( context ) {',
-		'				routerHelper.show404( context );',
-		'			} );',
+		'			page( ' + path + ', show404 );',
 		'		}',
 		'		layoutFocus.next();',
 		'		next();',
