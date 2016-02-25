@@ -211,7 +211,8 @@ const InvitePeople = React.createClass( {
 							<TokenField
 								isBorderless
 								value={ this.getTokensWithStatus() }
-								onChange={ this.onTokensChange } />
+								onChange={ this.onTokensChange }
+								disabled={ this.state.sendingInvites }/>
 							<FormSettingExplanation>
 								{ this.translate(
 									'Invite up to 10 email addresses and/or WordPress.com usernames. ' +
