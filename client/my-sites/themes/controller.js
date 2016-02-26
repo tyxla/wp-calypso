@@ -3,7 +3,6 @@
  */
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import omit from 'lodash/omit';
 
 /**
  * Internal Dependencies
