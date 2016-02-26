@@ -31,7 +31,7 @@ const Email = React.createClass( {
 		] ).isRequired,
 		user: React.PropTypes.object.isRequired,
 		googleAppsUsers: React.PropTypes.array.isRequired,
-		loaded: React.PropTypes.bool.isRequired
+		googleAppsUsersLoaded: React.PropTypes.bool.isRequired
 	},
 
 	render() {
@@ -63,7 +63,7 @@ const Email = React.createClass( {
 	},
 
 	content() {
-		if ( ! ( this.props.domains.hasLoadedFromServer && this.props.loaded ) ) {
+		if ( ! ( this.props.domains.hasLoadedFromServer && this.props.googleAppsUsersLoaded ) ) {
 			return this.translate( 'Loading…' );
 		}
 
@@ -80,20 +80,31 @@ const Email = React.createClass( {
 	},
 
 	emptyContent() {
-		let props = {
-			title: this.translate( "You don't have any domains yet." ),
-			line: this.translate(
-				'Add a domain to your site to make it easier ' +
-				'to remember and easier to share, and get access to email ' +
-				'forwarding, Google Apps for Work, and other email services.'
-			),
+		let props;
+		if ( this.props.selectedSite ) {
+			props = {
+				title: this.translate( 'This domain is not eligible for Google Apps.' ),
+				line: this.translate( 'Currently, only registered domains through WordPress.com are eligible' +
+					' for Google Apps for Work.' )
+			}
+		} else {
+			props = {
+				title: this.translate( "You don't have any domains yet." ),
+				line: this.translate(
+					'Add a domain to your site to make it easier ' +
+					'to remember and easier to share, and get access to email ' +
+					'forwarding, Google Apps for Work, and other email services.'
+				)
+			};
+		}
+		Object.assign( props, {
 			illustration: '/calypso/images/drake/drake-whoops.svg',
 			action: this.translate( 'Add a Custom Domain' ),
 			actionURL: '/domains/add/' + this.props.selectedSite.slug
-		};
+		} );
 
 		return (
-			<EmptyContent { ...props } />
+			<EmptyContent {...props } />
 		);
 	},
 
@@ -105,12 +116,12 @@ const Email = React.createClass( {
 		return (
 			<div>
 				<AddGoogleAppsCard { ...this.props } />
-				<VerticalNav>
+				{ this.props.selectedDomainName && <VerticalNav>
 					<VerticalNavItem
 						path={ paths.domainManagementEmailForwarding( this.props.selectedSite.domain, this.props.selectedDomainName ) }>
 						{ this.translate( 'Email Forwarding' ) }
 					</VerticalNavItem>
-				</VerticalNav>
+				</VerticalNav> }
 			</div>
 		);
 	},

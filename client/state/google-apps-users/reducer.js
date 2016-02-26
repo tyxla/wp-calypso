@@ -17,7 +17,6 @@ import {
 
 export function items( state = [], action ) {
 	switch ( action.type ) {
-		case GOOGLE_APPS_USERS_FETCH_FAILED:
 		case GOOGLE_APPS_USERS_FETCH_COMPLETED:
 			return uniqBy( state.concat( action.items ), property( 'email' ) );
 			break;

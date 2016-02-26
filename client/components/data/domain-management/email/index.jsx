@@ -46,7 +46,7 @@ function getStateFromStores( props ) {
 		selectedSite: props.selectedSite,
 		user: user.get(),
 		googleAppsUsers: props.googleAppsUsers,
-		loaded: props.loaded
+		googleAppsUsersLoaded: props.googleAppsUsersLoaded
 	};
 }
 
@@ -60,7 +60,7 @@ const EmailData = React.createClass( {
 		selectedDomainName: React.PropTypes.string,
 		sites: React.PropTypes.object.isRequired,
 		googleAppsUsers: React.PropTypes.array.isRequired,
-		loaded: React.PropTypes.bool.isRequired
+		googleAppsUsersLoaded: React.PropTypes.bool.isRequired
 	},
 
 	mixins: [ observe( 'productsList' ) ],
@@ -88,7 +88,7 @@ const EmailData = React.createClass( {
 		return (
 			<StoreConnection
 				googleAppsUsers={ this.props.googleAppsUsers }
-				loaded={ this.props.loaded }
+				googleAppsUsersLoaded={ this.props.googleAppsUsersLoaded }
 				component={ this.props.component }
 				stores={ stores }
 				getStateFromStores={ getStateFromStores }
@@ -110,7 +110,7 @@ export default connect(
 		}
 		return {
 			googleAppsUsers: usersGetter(),
-			loaded: getLoaded( state )
+			googleAppsUsersLoaded: getLoaded( state )
 		}
 	},
 	( dispatch, ownProps ) => {
