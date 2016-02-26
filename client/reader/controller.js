@@ -59,15 +59,14 @@ function trackScrollPage( path, title, category, readerView, pageNum ) {
 
 // Listen for route changes and remove the full post dialog when we navigate away from it
 pageNotifier( function removeFullPostOnLeave( newContext, oldContext ) {
-	if ( ! oldContext ) {
-		return;
-	}
-
 	const fullPostViewPrefix = '/read/post/';
 
-	if ( startsWith( oldContext.path, fullPostViewPrefix ) &&
+	console.log( 'from %s to %s', ( oldContext && oldContext.path ), newContext.path );
+
+	if ( ( ! oldContext || startsWith( oldContext.path, fullPostViewPrefix ) ) &&
 		! startsWith( newContext.path, fullPostViewPrefix ) ) {
-		oldContext.store.dispatch( hideReaderFullPost() );
+		console.log( 'hiding full post view' );
+		newContext.store.dispatch( hideReaderFullPost() );
 	}
 } );
 
