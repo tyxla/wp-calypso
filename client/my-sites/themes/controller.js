@@ -22,6 +22,7 @@ import { setSection } from 'state/ui/actions';
 import ClientSideEffects from 'components/client-side-effects';
 import LayoutLoggedOut from 'layout/logged-out';
 import DefaultHead from 'layout/head';
+import ThemesHead from 'head';
 
 function runClientAnalytics( context ) {
 	const { tier, site_id: siteId } = context.params;
@@ -68,6 +69,20 @@ function getSingleSiteProps( context ) {
 	return props;
 }
 
+function getDetailsProps( context ) {
+	const { slug, section } = context.params;
+	const user = getCurrentUser( context.store.getState() );
+
+	return {
+		themeSlug: slug,
+		contentSection: section,
+		title: buildTitle(
+			i18n.translate( 'Theme Details', { textOnly: true } )
+		),
+		isLoggedIn: !! user
+	};
+}
+
 const LoggedInHead = ( { children, context: { params: { tier, site_id: siteID } } } ) => (
 	<DefaultHead
 		title={ buildTitle(
@@ -77,6 +92,17 @@ const LoggedInHead = ( { children, context: { params: { tier, site_id: siteID } 
 		tier={ tier || 'all' }>
 		{ children }
 	</DefaultHead>
+);
+
+const LoggedOutHead = ( { children, context: { params: { tier, site_id: siteID } } } ) => (
+	<ThemesHead
+		title={ buildTitle(
+			i18n.translate( 'Themes', { textOnly: true } ),
+			{ siteID }
+		) }
+		tier={ tier || 'all' }>
+		{ children }
+	</ThemesHead>
 );
 
 // This is generic -- nothing themes-specific in here!
@@ -98,16 +124,51 @@ function makeElement( Component, getProps, Head, action = {}, sideEffects = func
 };
 
 // Usage:
-const setDesignSection = setSection( 'design', {
+const setLoggedInDesignSection = setSection( 'design', {
 	hasSidebar: true,
 	isFullScreen: false
+} );
+
+const setLoggedOutDesignSection = setSection( 'design', {
+	hasSidebar: false,
+	isFullScreen: false
+} );
+
+const setThemesSection = setSection( 'themes', {
+	hasSidebar: false,
+	isFullScreen: true
 } );
 
 export const singleSite = makeElement(
 	SingleSiteComponent,
 	getSingleSiteProps,
 	LoggedInHead,
-	setDesignSection,
+	setLoggedInDesignSection,
+	runClientAnalytics
+);
+
+export const multiSite = makeElement(
+	MultiSiteComponent,
+	getMultiSiteProps,
+	LoggedInHead,
+	setLoggedInDesignSection,
+	runClientAnalytics
+);
+
+export const loggedOut = makeElement(
+	LoggedOutComponent,
+	getMultiSiteProps,
+	LoggedOutHead,
+	setLoggedOutDesignSection,
+	runClientAnalytics
+);
+
+// context.secondary = null; // !!!!
+export const details = makeElement(
+	ThemeSheetComponent,
+	getDetailsProps,
+	LoggedOutHead, // logged-in ? LoggedInHead : LoggedOutHead
+	setThemesSection,
 	runClientAnalytics
 );
 
@@ -124,70 +185,3 @@ export function makeLoggedOutLayout( context, next ) {
 	);
 	next();
 };
-
-export function singleSite( context, next ) {
-	const Head = require( 'layout/head' );
-	const { site_id: siteId } = context.params;
-	const props = getProps( context );
-
-	props.key = siteId;
-	props.siteId = siteId;
-
-	context.store.dispatch( setSection( 'design', {
-		hasSidebar: true,
-		isFullScreen: false
-	} ) );
-
-	context.primary = makeElement( SingleSiteComponent, Head, context.store, props );
-	next();
-}
-
-export function multiSite( context, next ) {
-	const Head = require( 'layout/head' );
-	const props = getProps( context );
-
-	context.store.dispatch( setSection( 'design', {
-		hasSidebar: true,
-		isFullScreen: false
-	} ) );
-
-	context.primary = makeElement( MultiSiteComponent, Head, context.store, props );
-	next();
-}
-
-export function loggedOut( context, next ) {
-	const Head = require( 'my-sites/themes/head' );
-	const props = getProps( context );
-
-	context.store.dispatch( setSection( 'design', {
-		hasSidebar: false,
-		isFullScreen: false
-	} ) );
-
-	context.primary = makeElement( LoggedOutComponent, Head, context.store, props );
-	next();
-}
-
-export function details( context, next ) {
-	const user = getCurrentUser( context.store.getState() );
-	const Head = user
-		? require( 'layout/head' )
-		: require( 'my-sites/themes/head' );
-	const props = {
-		themeSlug: context.params.slug,
-		contentSection: context.params.section,
-		title: buildTitle(
-			i18n.translate( 'Theme Details', { textOnly: true } )
-		),
-		isLoggedIn: !! user
-	};
-
-	context.store.dispatch( setSection( 'themes', {
-		hasSidebar: false,
-		isFullScreen: true
-	} ) );
-
-	context.primary = makeElement( ThemeSheetComponent, Head, context.store, props );
-	context.secondary = null; // When we're logged in, we need to remove the sidebar.
-	next();
-}
