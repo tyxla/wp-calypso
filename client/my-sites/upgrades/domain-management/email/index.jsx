@@ -81,7 +81,7 @@ const Email = React.createClass( {
 
 	emptyContent() {
 		let props;
-		if ( this.props.selectedSite ) {
+		if ( this.props.selectedDomainName ) {
 			props = {
 				title: this.translate( 'This domain is not eligible for Google Apps.' ),
 				line: this.translate( 'Currently, only registered domains through WordPress.com are eligible' +
