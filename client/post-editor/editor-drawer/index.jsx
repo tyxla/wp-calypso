@@ -5,6 +5,7 @@ const React = require( 'react' ),
 	find = require( 'lodash/find' );
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import get from 'lodash/get';
 /**
  * Internal dependencies
  */
@@ -60,7 +61,7 @@ const EditorDrawer = React.createClass( {
 	onExcerptChange: function( event ) {
 		// TODO: REDUX - remove flux actions when whole post-editor is reduxified
 		actions.edit( { excerpt: event.target.value } );
-		this.props.setExcerpt( this.props.site.ID, this.props.post.ID, event.target.value );
+		this.props.setExcerpt( get( this, 'props.site.ID' ), get( this, 'props.post.ID' ), event.target.value );
 	},
 
 	currentPostTypeSupports: function( feature ) {
@@ -68,7 +69,7 @@ const EditorDrawer = React.createClass( {
 			return false;
 		}
 
-		const types = this.props.postTypes.get( this.props.site.ID );
+		const types = this.props.postTypes.get( get( this, 'props.site.ID' ) );
 		const currentType = find( types, { name: this.props.type } );
 
 		// assume positively if we can't determine support
@@ -116,7 +117,7 @@ const EditorDrawer = React.createClass( {
 		}
 
 		return (
-			<PostFormatsData siteId={ this.props.site.ID }>
+			<PostFormatsData siteId={ get( this, 'props.site.ID' ) }>
 				<PostFormatsAccordion
 					site={ this.props.site }
 					post={ this.props.post }
