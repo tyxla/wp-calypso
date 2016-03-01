@@ -7,7 +7,7 @@ import React from 'react';
 /**
  * Internal dependencies
  */
-import { isFreeTrial, isPlan } from 'lib/products-values';
+import { isDomainRegistration, isFreeTrial, isPlan } from 'lib/products-values';
 import Gridicon from 'components/gridicon';
 
 const CheckoutThankYouHeader = React.createClass( {
@@ -34,6 +34,13 @@ const CheckoutThankYouHeader = React.createClass( {
 			return this.translate( "You will receive an email confirmation shortly. What's next?" );
 		}
 
+		if ( isDomainRegistration( this.props.primaryPurchase ) ) {
+			return this.translate( 'Your new domain {{strong}}%(domain)s{{/strong}} is being set up. Your site is doing somersaults in excitement!', {
+				args: { domain: this.props.primaryPurchase.meta },
+				components: { strong: <strong /> }
+			} );
+		}
+
 		if ( isFreeTrial( this.props.primaryPurchase ) ) {
 			return this.translate( "We hope you enjoy {{strong}}%(productName)s{{/strong}}. What's next? Take it for a spin!", {
 				args: {
@@ -43,7 +50,9 @@ const CheckoutThankYouHeader = React.createClass( {
 					strong: <strong />
 				}
 			} );
-		} else if ( isPlan( this.props.primaryPurchase ) ) {
+		}
+
+		if ( isPlan( this.props.primaryPurchase ) ) {
 			return this.translate( "Your site is now on the {{strong}}%(productName)s{{/strong}} plan. It's doing somersaults in excitement!", {
 				args: { productName: this.props.primaryPurchase.productName },
 				components: { strong: <strong /> }
