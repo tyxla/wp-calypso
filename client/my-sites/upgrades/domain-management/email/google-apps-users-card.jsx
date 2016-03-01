@@ -29,8 +29,12 @@ const GoogleAppsUsers = React.createClass( {
 	},
 
 	canAddUsers() {
-		let domainsInContext = this.props.selectedDomainName ? [ getSelectedDomain( this.props ) ] : this.props.domains.list;
-		return domainsInContext.some( domain => domain.googleAppsSubscription.ownedByUserId === this.props.user.ID );
+		const domainsInContext = this.props.selectedDomainName
+			? [ getSelectedDomain( this.props ) ]
+			: this.props.domains.list;
+		return domainsInContext.some( domain =>
+			domain.googleAppsSubscription.ownedByUserId === this.props.user.ID
+		);
 	},
 
 	generateClickHandler( user ) {
@@ -51,7 +55,9 @@ const GoogleAppsUsers = React.createClass( {
 					label={ this.translate( 'Google Apps Users' ) }>
 					{ this.canAddUsers() && (
 						<a
-							href={ paths.domainManagementAddGoogleApps( this.props.selectedSite.slug, this.props.selectedDomainName ) }
+							href={ paths.domainManagementAddGoogleApps(
+								this.props.selectedSite.slug, this.props.selectedDomainName
+							) }
 							className="button is-compact is-primary"
 							onClick={ this.goToAddGoogleApps }>
 							{ this.translate( 'Add Google Apps User' ) }
