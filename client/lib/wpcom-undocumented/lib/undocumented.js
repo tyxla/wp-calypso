@@ -1719,7 +1719,7 @@ Undocumented.prototype.googleAppsFilterByDomain = function( domainName, fn ) {
 };
 
 Undocumented.prototype.googleAppsFilterBySiteId = function( siteId, fn ) {
-	debug( '/sites/:siteId/google-apps/site' );
+	debug( '/sites/:siteId/google-apps' );
 	return this.wpcom.req.get( { path: '/sites/' + siteId + '/google-apps' }, fn );
 };
 
