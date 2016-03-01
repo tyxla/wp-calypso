@@ -60,8 +60,8 @@ html(lang=lang, dir=isRTL ? 'rtl' : 'ltr', class=isFluidWidth ? 'is-fluid-width'
 		noscript
 			|Please enable JavaScript in your browser to enjoy WordPress.com.
 
-		if layout
-			#wpcom.wpcom-site!= layout
+		if renderedLayout
+			#wpcom.wpcom-site!= renderedLayout
 		else
 			#wpcom.wpcom-site
 				.wpcom-site__logo.noticon.noticon-wordpress

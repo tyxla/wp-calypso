@@ -33,7 +33,7 @@ function render( element ) {
 	try {
 		const startTime = Date.now();
 		const context = {
-			layout: memoizedRenderToString( element, JSON.stringify( element ) ),
+			renderedLayout: memoizedRenderToString( element, JSON.stringify( element ) ),
 		};
 		const rtsTimeMs = Date.now() - startTime;
 
