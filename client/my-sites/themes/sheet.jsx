@@ -74,6 +74,13 @@ export const ThemeSheet = React.createClass( {
 		return { priceElement, themeContentElement };
 	},
 
+	validateSection( section ) {
+		if ( [ 'details', 'support', 'documentation' ].indexOf( section ) === -1 ) {
+			return 'details';
+		}
+		return section;
+	},
+
 	render() {
 		let actionTitle;
 		if ( this.props.isLoggedIn && this.props.active ) { //FIXME: active ENOENT
@@ -86,7 +93,7 @@ export const ThemeSheet = React.createClass( {
 			actionTitle = i18n.translate( 'Start with this design' );
 		}
 
-		const section = this.props.section || 'details';
+		const section = this.validateSection( this.props.section );
 		const filterStrings = {
 			details: i18n.translate( 'Details', { context: 'Filter label for theme content' } ),
 			documentation: i18n.translate( 'Documentation', { context: 'Filter label for theme content' } ),
