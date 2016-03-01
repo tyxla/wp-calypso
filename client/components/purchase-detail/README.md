@@ -33,3 +33,4 @@ export default React.createClass( {
 - *isPlaceholder* (boolean) – determines whether or not to render shimmering placeholders
 - *target* (string) – target passed as the `target` prop for the `Button`
 - *title* (string) – string used as the text of the heading
+- *requiredText* (boolean) – adds a notice to the top, determines the text in that notice
