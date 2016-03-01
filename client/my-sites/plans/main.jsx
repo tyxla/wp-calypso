@@ -39,11 +39,18 @@ var Plans = React.createClass( {
 	},
 
 	componentDidMount: function() {
-		this.props.fetchSitePlans( this.props.sitePlans, this.props.sites.getSelectedSite() );
+		this.updateSitePlans();
 	},
 
 	componentWillReceiveProps: function() {
-		this.props.fetchSitePlans( this.props.sitePlans, this.props.sites.getSelectedSite() );
+		this.updateSitePlans();
+	},
+
+	updateSitePlans: function() {
+		var selectedSite = this.props.sites.getSelectedSite();
+		if ( selectedSite ) {
+			this.props.fetchSitePlans( this.props.sitePlans, selectedSite );
+		}
 	},
 
 	openPlan: function( planId ) {
@@ -55,25 +62,21 @@ var Plans = React.createClass( {
 	},
 
 	comparePlansLink: function() {
-		var url = '/plans/compare',
-			selectedSite = this.props.sites.getSelectedSite();
-
-		var compareString = this.translate( 'Compare Plans' );
+		var selectedSite = this.props.sites.getSelectedSite(),
+			compareString;
 
 		if ( selectedSite.jetpack ) {
 			compareString = this.translate( 'Compare Options' );
+		} else {
+			compareString = this.translate( 'Compare Plans' );
 		}
 
 		if ( this.props.plans.get().length <= 0 ) {
 			return '';
 		}
 
-		if ( selectedSite ) {
-			url += '/' + selectedSite.slug;
-		}
-
 		return (
-			<a href={ url } className="compare-plans-link" onClick={ this.recordComparePlansClick }>
+			<a href={ '/plans/compare/' + selectedSite.slug } className="compare-plans-link" onClick={ this.recordComparePlansClick }>
 				<Gridicon icon="clipboard" size={ 18 } />
 				{ compareString }
 			</a>
@@ -163,12 +166,12 @@ var Plans = React.createClass( {
 						<UpgradesNavigation
 							path={ this.props.context.path }
 							cart={ this.props.cart }
-							selectedSite={ this.props.sites.getSelectedSite() } />
+							selectedSite={ selectedSite } />
 
 						{ this.renderTrialCopy() }
 
 						<PlanList
-							sites={ this.props.sites }
+							site={ selectedSite }
 							plans={ this.props.plans.get() }
 							enableFreeTrials={ getABTestVariation( 'freeTrials' ) === 'offered' }
 							sitePlans={ this.props.sitePlans }
