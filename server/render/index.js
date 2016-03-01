@@ -32,14 +32,14 @@ function render( element ) {
 
 	try {
 		const startTime = Date.now();
-		const context = {
+		let context = {
 			renderedLayout: memoizedRenderToString( element, JSON.stringify( element ) ),
 		};
 		const rtsTimeMs = Date.now() - startTime;
 
 		if ( Helmet.peek() ) {
 			const helmetData = Helmet.rewind();
-			Object.assign( {}, context, {
+			Object.assign( context, {
 				helmetTitle: helmetData.title,
 				helmetMeta: helmetData.meta,
 				helmetLink: helmetData.link,
