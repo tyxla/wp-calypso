@@ -31,14 +31,8 @@ var stores = [
 ];
 
 function getStateFromStores( props ) {
-	let domains;
-
-	if ( props.selectedSite ) {
-		domains = DomainsStore.getBySite( props.selectedSite.ID );
-	}
-
 	return {
-		domains,
+		domains: DomainsStore.getBySite( props.selectedSite.ID ) || {},
 		cart: CartStore.get(),
 		context: props.context,
 		products: props.products,
@@ -87,6 +81,7 @@ const EmailData = React.createClass( {
 	render() {
 		return (
 			<StoreConnection
+				domains={ this.props.domains }
 				googleAppsUsers={ this.props.googleAppsUsers }
 				googleAppsUsersLoaded={ this.props.googleAppsUsersLoaded }
 				component={ this.props.component }
