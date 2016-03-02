@@ -1,44 +1,43 @@
 /**
  * External dependencies
  */
-var React = require( 'react' ),
-	page = require( 'page' ),
-	classNames = require( 'classnames' );
+import React from 'react';
+import page from 'page';
+import classNames from 'classnames';
 
 /**
  * Internal dependencies
  */
-var toggle = require( '../mixin-toggle' ),
-	skeleton = require( '../mixin-skeleton' ),
-	observe = require( 'lib/mixins/data-observe' ),
-	ErrorPanel = require( '../stats-error' ),
-	InfoPanel = require( '../info-panel' ),
-	StatsList = require( '../stats-list' ),
-	StatsListLegend = require( '../stats-list/legend' ),
-	DownloadCsv = require( '../stats-download-csv' ),
-	DatePicker = require( '../stats-date-picker' ),
-	Card = require( 'components/card' ),
-	StatsModulePlaceholder = require( './placeholder' ),
-	Gridicon = require( 'components/gridicon' ),
-	SectionHeader = require( 'components/section-header' ),
-	Button = require( 'components/button' );
+import toggle from '../mixin-toggle';
+import skeleton from '../mixin-skeleton';
+import observe from 'lib/mixins/data-observe';
+import ErrorPanel from '../stats-error';
+import StatsList from '../stats-list';
+import StatsListLegend from '../stats-list/legend';
+import DownloadCsv from '../stats-download-csv';
+import DatePicker from '../stats-date-picker';
+import Card from 'components/card';
+import StatsModulePlaceholder from './placeholder';
+import Gridicon from 'components/gridicon';
+import SectionHeader from 'components/section-header';
+import Button from 'components/button';
 
-module.exports = React.createClass( {
+export default React.createClass( {
 	displayName: 'StatModule',
 
 	mixins: [ toggle(), skeleton( 'data' ), observe( 'dataList' ) ],
 
-	data: function() {
+	data() {
 		return this.props.dataList.response.data;
 	},
 
-	getDefaultProps: function() {
+	getDefaultProps() {
 		return{
 			showPeriodDetail: false
 		}
 	},
 
-	getInitialState: function() {
+	getInitialState() {
 		return { noData: this.props.dataList.isEmpty() };
 	},
 
@@ -46,7 +45,7 @@ module.exports = React.createClass( {
 		this.setState( { noData: nextProps.dataList.isEmpty() } );
 	},
 
-	viewAllHandler: function( event ) {
+	viewAllHandler( event ) {
 		var summaryPageLink = '/stats/' + this.props.period.period + '/' + this.props.path + '/' + this.props.site.slug + '?startDate=' + this.props.date;
 
 		event.preventDefault();
@@ -57,23 +56,20 @@ module.exports = React.createClass( {
 		page( summaryPageLink );
 	},
 
-	getModuleLabel: function() {
-		if( ! this.props.summary ) {
+	getModuleLabel() {
+		if ( ! this.props.summary ) {
 			return this.props.moduleStrings.title;
-		} else {
-			return ( <DatePicker period={ this.props.period.period } date={ this.props.period.startOf } summary={ true } /> );
 		}
+
+		return ( <DatePicker period={ this.props.period.period } date={ this.props.period.startOf } summary={ true } /> );
 	},
 
-	render: function() {
+	render() {
 		var data = this.data(),
 			noData = this.props.dataList.isEmpty(),
 			hasError = this.props.dataList.isError(),
-			headerLink = this.props.moduleStrings.title,
 			isLoading = this.props.dataList.isLoading(),
-			moduleHeaderTitle,
 			statsList,
-			moduleToggle,
 			classes;
 
 		classes = classNames(
@@ -94,14 +90,14 @@ module.exports = React.createClass( {
 
 				<SectionHeader label={ this.getModuleLabel() }>
 					{ ! this.props.summary
-					 	? ( <Button
+						? ( <Button
 								compact
 								borderless
 								onClick={ this.viewAllHandler }
 								>
 								<Gridicon icon="stats-alt" />
 							</Button> )
-					 	: ( <DownloadCsv period={ this.props.period } path={ this.props.path } site={ this.props.site } dataList={ this.props.dataList } /> ) }
+						: ( <DownloadCsv period={ this.props.period } path={ this.props.path } site={ this.props.site } dataList={ this.props.dataList } /> ) }
 				</SectionHeader>
 				<Card compact className={ classes }>
 					<div className={ this.props.className }>
