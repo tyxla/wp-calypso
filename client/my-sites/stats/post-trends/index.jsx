@@ -147,8 +147,6 @@ export default React.createClass( {
 					<div className={ leftClass } onClick={ this.scrollLeft }><span className="left-arrow"></span></div>
 					<div className={ rightClass } onClick={ this.scrollRight }><span className="right-arrow"></span></div>
 					<div ref="wrapper" className="post-trends__wrapper">
-						<div className={ leftClass } onClick={ this.scrollLeft }><span className="left-arrow"></span></div>
-						<div className={ rightClass } onClick={ this.scrollRight }><span className="right-arrow"></span></div>
 						<div ref="year" className="post-trends__year">
 							{ this.getMonthComponents() }
 						</div>
