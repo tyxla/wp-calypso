@@ -107,5 +107,12 @@ module.exports = {
 		defaultVariation: 'original',
 		excludeSitesWithPaidPlan: true
 	},
-
+	domainSearchPlaceholderText: {
+		datestamp: '20000302',
+		variations: {
+			original: 50,
+			searchForADomain: 50
+		},
+		defaultVariation: 'original'
+	},
 };
