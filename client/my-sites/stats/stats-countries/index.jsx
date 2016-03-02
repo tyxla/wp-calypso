@@ -52,16 +52,14 @@ export default React.createClass( {
 
 	render() {
 		let mapData = [
-				[
-					this.translate( 'Country' ).toString(),
-					this.translate( 'Views' ).toString()
-				]
-			],
+			[
+				this.translate( 'Country' ).toString(),
+				this.translate( 'Views' ).toString()
+			] ],
 			data = this.data(),
 			hasError = this.props.dataList.isError(),
 			noData = this.props.dataList.isEmpty(),
-			isLoading = this.props.dataList.isLoading(),
-			moduleToggle;
+			isLoading = this.props.dataList.isLoading();
 
 		const classes = [
 			'stats-module',
