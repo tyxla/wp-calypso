@@ -12,7 +12,7 @@ import userFactory from 'lib/user';
 
 const user = userFactory();
 
-const GoogleAppsDetails = ( { selectedSite } ) => {
+const GoogleAppsDetails = ( { isRequired } ) => {
 	return (
 		<PurchaseDetail
 			icon="cog"
@@ -25,12 +25,13 @@ const GoogleAppsDetails = ( { selectedSite } ) => {
 			}
 			buttonText={ i18n.translate( 'Learn more about Google Apps' ) }
 			href="https://apps.google.com/learning-center/"
-			target="_blank" />
+			target="_blank"
+			isRequired={ isRequired } />
 	);
 };
 
 GoogleAppsDetails.propTypes = {
-	selectedSite: React.PropTypes.object.isRequired
+	isRequired: React.PropTypes.bool
 };
 
 export default GoogleAppsDetails;
