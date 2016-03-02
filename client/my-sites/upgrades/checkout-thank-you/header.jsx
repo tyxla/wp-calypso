@@ -7,7 +7,7 @@ import React from 'react';
 /**
  * Internal dependencies
  */
-import { isFreeTrial, isPlan } from 'lib/products-values';
+import { isDomainMapping, isFreeTrial, isPlan } from 'lib/products-values';
 import Gridicon from 'components/gridicon';
 
 const CheckoutThankYouHeader = React.createClass( {
@@ -34,6 +34,17 @@ const CheckoutThankYouHeader = React.createClass( {
 			return this.translate( "You will receive an email confirmation shortly. What's next?" );
 		}
 
+		if ( isDomainMapping( this.props.primaryPurchase ) ) {
+			return this.translate(
+				'Your domain {{strong}}%(domain)s{{/strong}} was added to your site. ' +
+				'But it isn’t working yet – follow the instructions below to complete the set up.',
+				{
+					args: { domain: this.props.primaryPurchase.meta },
+					components: { strong: <strong /> }
+				}
+			);
+		}
+
 		if ( isFreeTrial( this.props.primaryPurchase ) ) {
 			return this.translate( "We hope you enjoy {{strong}}%(productName)s{{/strong}}. What's next? Take it for a spin!", {
 				args: {
@@ -43,7 +54,9 @@ const CheckoutThankYouHeader = React.createClass( {
 					strong: <strong />
 				}
 			} );
-		} else if ( isPlan( this.props.primaryPurchase ) ) {
+		}
+
+		if ( isPlan( this.props.primaryPurchase ) ) {
 			return this.translate( "Your site is now on the {{strong}}%(productName)s{{/strong}} plan. It's doing somersaults in excitement!", {
 				args: { productName: this.props.primaryPurchase.productName },
 				components: { strong: <strong /> }
