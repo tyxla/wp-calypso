@@ -41,6 +41,14 @@ module.exports = React.createClass( {
 		this.setState( { noData: nextProps.dataList.isEmpty() } );
 	},
 
+	getModuleLabel: function() {
+		if( ! this.props.summary ) {
+			return this.translate( 'Countries' );
+		} else {
+			return ( <DatePicker period={ this.props.period.period } date={ this.props.period.startOf } summary={ true } /> );
+		}
+	},
+
 	render: function() {
 		var countries,
 			mapData = [
@@ -56,7 +64,6 @@ module.exports = React.createClass( {
 			isLoading = this.props.dataList.isLoading(),
 			moduleHeaderTitle,
 			summaryPageLink,
-			viewSummary,
 			geochart,
 			moduleToggle,
 			classes;
@@ -81,36 +88,23 @@ module.exports = React.createClass( {
 
 		summaryPageLink = '/stats/' + this.props.period.period + '/countryviews/' + this.props.site.slug + '?startDate=' + this.props.date;
 
-		if ( ! this.props.summary ) {
-			moduleHeaderTitle = (
-				<h4 className="module-header-title"><a href={ summaryPageLink }>{ this.translate( 'Countries' ) }</a></h4>
-			);
-			moduleToggle = (
-				<li className="module-header-action toggle-services">
-					<a href="#" className="module-header-action-link" aria-label={ this.translate( 'Expand or collapse panel', { textOnly: true, context: 'Stats panel action' } ) } title={ this.translate( 'Expand or collapse panel', { textOnly: true, context: 'Stats panel action' } ) } onClick={ this.toggleModule }>
-						<Gridicon icon="chevron-down" />
-					</a>
-				</li>
-			);
-
-			if ( this.props.dataList.response.viewAll ) {
-				viewSummary = (
-					<div key="view-all" className="module-expand">
-						<a href={ summaryPageLink }>{ this.translate( 'View All', { context: 'Stats: Button label to expand a panel' } ) }<span className="right"></span></a>
-					</div>
-				);
-			}
-		} else {
-			moduleHeaderTitle = <DatePicker period={ this.props.period.period } date={ this.props.period.startOf } summary={ true } />;
-		}
-
 		geochart = <Geochart data={ mapData } dataList={ this.props.dataList } />;
 
 		countries = <StatsList moduleName={ this.props.path } data={ data } />;
 
 		return (
 			<div>
-				<SectionHeader label={ this.translate( 'Countries' ) }></SectionHeader>
+				<SectionHeader label={ this.getModuleLabel() }>
+					{ ! this.props.summary
+					 	? ( <Button
+								compact
+								borderless
+								href={ summaryPageLink }
+								>
+								<Gridicon icon="stats-alt" />
+							</Button> )
+					 	: ( <DownloadCsv period={ this.props.period } path={ this.props.path } site={ this.props.site } dataList={ this.props.dataList } /> ) }
+				</SectionHeader>
 					<Card className={ classNames.apply( null, classes ) }>
 						<div className="countryviews">
 							<div className="module-content">
@@ -127,12 +121,8 @@ module.exports = React.createClass( {
 								<StatsListLegend value={ this.translate( 'Views' ) } label={ this.translate( 'Country' ) } />
 								<StatsModulePlaceholder isLoading={ isLoading } />
 								{ countries }
-								{ this.props.summary
-									? <DownloadCsv period={ this.props.period } path={ this.props.path } site={ this.props.site } dataList={ this.props.dataList } />
-									: null }
 								{ hasError ? <ErrorPanel className={ 'network-error' } /> : null }
 							</div>
-							{ viewSummary }
 						</div>
 					</Card>
 			</div>

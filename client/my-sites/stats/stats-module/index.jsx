@@ -32,17 +32,18 @@ module.exports = React.createClass( {
 		return this.props.dataList.response.data;
 	},
 
+	getDefaultProps: function() {
+		return{
+			showPeriodDetail: false
+		}
+	},
+
 	getInitialState: function() {
 		return { noData: this.props.dataList.isEmpty() };
 	},
 
 	componentWillReceiveProps: function( nextProps ) {
 		this.setState( { noData: nextProps.dataList.isEmpty() } );
-	},
-
-	hasSummaryPage: function() {
-		var noSummaryPages = [ 'tags-categories', 'publicize' ];
-		return -1 === noSummaryPages.indexOf( this.props.path );
 	},
 
 	viewAllHandler: function( event ) {
@@ -56,6 +57,14 @@ module.exports = React.createClass( {
 		page( summaryPageLink );
 	},
 
+	getModuleLabel: function() {
+		if( ! this.props.summary ) {
+			return this.props.moduleStrings.title;
+		} else {
+			return ( <DatePicker period={ this.props.period.period } date={ this.props.period.startOf } summary={ true } /> );
+		}
+	},
+
 	render: function() {
 		var data = this.data(),
 			noData = this.props.dataList.isEmpty(),
@@ -64,7 +73,6 @@ module.exports = React.createClass( {
 			isLoading = this.props.dataList.isLoading(),
 			moduleHeaderTitle,
 			statsList,
-			viewSummary,
 			moduleToggle,
 			classes;
 
@@ -81,31 +89,11 @@ module.exports = React.createClass( {
 
 		statsList = <StatsList moduleName={ this.props.path } data={ data } followList={ this.props.followList } />;
 
-		if ( this.hasSummaryPage() ) {
-			headerLink = ( <a href="#" onClick={ this.viewAllHandler }>{ this.props.moduleStrings.title }</a> );
-		}
-
-		if ( !this.props.summary ) {
-			moduleToggle = (
-				<li className="module-header-action toggle-services"><a href="#" className="module-header-action-link" aria-label={ this.translate( 'Expand or collapse panel', { context: 'Stats panel action' } ) } title={ this.translate( 'Expand or collapse panel', { context: 'Stats panel action' } ) } onClick={ this.toggleModule }><Gridicon icon="chevron-down" /></a></li>
-			);
-
-			if ( this.props.dataList.response.viewAll ) {
-				viewSummary = (
-					<div key="view-all" className="module-expand">
-						<a href="#" onClick={ this.viewAllHandler }>{ this.translate( 'View All', { context: 'Stats: Button label to expand a panel' } ) }<span className="right"></span></a>
-					</div>
-				);
-			}
-		} else {
-			moduleHeaderTitle = <DatePicker period={ this.props.period.period } date={ this.props.period.startOf } summary={ true } />;
-		}
-
 		return (
 			<div>
 
-				<SectionHeader label={ this.props.moduleStrings.title }>
-					{ this.hasSummaryPage()
+				<SectionHeader label={ this.getModuleLabel() }>
+					{ ! this.props.summary
 					 	? ( <Button
 								compact
 								borderless
@@ -113,7 +101,7 @@ module.exports = React.createClass( {
 								>
 								<Gridicon icon="stats-alt" />
 							</Button> )
-					 	: null }
+					 	: ( <DownloadCsv period={ this.props.period } path={ this.props.path } site={ this.props.site } dataList={ this.props.dataList } /> ) }
 				</SectionHeader>
 				<Card compact className={ classes }>
 					<div className={ this.props.className }>
@@ -123,11 +111,7 @@ module.exports = React.createClass( {
 							<StatsListLegend value={ this.props.moduleStrings.value } label={ this.props.moduleStrings.item } />
 							<StatsModulePlaceholder isLoading={ isLoading } />
 							{ statsList }
-							{ this.props.summary
-								? <DownloadCsv period={ this.props.period } path={ this.props.path } site={ this.props.site } dataList={ this.props.dataList } />
-							: null }
 						</div>
-						{ viewSummary }
 					</div>
 				</Card>
 			</div>
