@@ -15,7 +15,6 @@ import Month from './month';
 import Card from 'components/card';
 import SectionHeader from 'components/section-header';
 
-
 export default React.createClass( {
 
 	displayName: 'PostTrends',
@@ -141,7 +140,7 @@ export default React.createClass( {
 
 		return (
 
-			<div className="post-trends">
+			<div className={ containerClass }>
 				<SectionHeader label={ this.translate( 'Posting Activity' ) }></SectionHeader>
 				<Card>
 					<div className={ leftClass } onClick={ this.scrollLeft }><span className="left-arrow"></span></div>
